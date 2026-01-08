@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Giriş - DevCraft Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff0000, #00ff00, #0000ff);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo i {
+            font-size: 50px;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        
+        .logo .sub {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .login-btn:hover {
+            background: #2980b9;
+        }
+        
+        .security-note {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .security-note i {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #f5c6cb;
+        }
+        
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <h1>Admin Panel Girişi</h1>
+            <div class="sub">DevCraft Pro - Məxusi İdarəetmə</div>
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            Yanlış istifadəçi adı və ya şifrə!
+        </div>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username"><i class="fas fa-user"></i> İstifadəçi Adı</label>
+                <input type="text" id="username" placeholder="admin" required autofocus>
+            </div>
+            
+            <div class="input-group">
+                <label for="password"><i class="fas fa-lock"></i> Şifrə</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> Daxil Ol
+            </button>
+        </form>
+        
+        <div class="security-note">
+            <i class="fas fa-exclamation-triangle"></i>
+            Yalnız autorizə edilmiş şəxslər üçün. Bütün giriş cəhdləri qeydə alınır.
+        </div>
+        
+        <div class="back-link">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Ana Səhifəyə Qayıt</a>
+        </div>
+    </div>
+
+    <script>
+        // Hardcoded credentials (CHANGE THESE!)
+        const VALID_USERNAME = 'admin';
+        const VALID_PASSWORD = 'DevCraftPro2024!';
+        
+        // IP Whitelist (optional)
+        const ALLOWED_IPS = [
+            '127.0.0.1',
+            '192.168.1.*',
+            '10.0.0.*'
+            // Add your IP here
+        ];
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            // Get IP
+            let userIP = 'unknown';
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                userIP = ipData.ip;
+            } catch (error) {
+                // IP fetch failed, continue anyway
+            }
+            
+            // Log login attempt
+            logLoginAttempt(username, userIP);
+            
+            // Check credentials
+            if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+                // Create session
+                const sessionToken = generateSessionToken();
+                localStorage.setItem('admin_session', sessionToken);
+                localStorage.setItem('admin_username', username);
+                localStorage.setItem('admin_login_time', new Date().toISOString());
+                localStorage.setItem('admin_ip', userIP);
+                
+                // Redirect to dashboard
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                // Show error
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 3000);
+            }
+        });
+        
+        function generateSessionToken() {
+            return 'ADMIN_' + Date.now() + '_' + Math.random().toString(36).substr(2, 16);
+        }
+        
+        function logLoginAttempt(username, ip) {
+            const logData = {
+                username: username,
+                ip: ip,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                success: username === VALID_USERNAME
+            };
+            
+            // Send to Telegram
+            sendToTelegram(logData);
+            
+            // Store locally
+            const attempts = JSON.parse(localStorage.getItem('login_attempts') || '[]');
+            attempts.push(logData);
+            localStorage.setItem('login_attempts', JSON.stringify(attempts.slice(-50))); // Keep last 50
+        }
+        
+        function sendToTelegram(data) {
+            const token = '6543212345:AAHjkKJHKJHKJHKJHKJHkjhKJHKJHKJH';
+            const chatId = '-1001234567890';
+            
+            const message = `🔐 Admin Giriş Cəhdi\n\n👤 İstifadəçi: ${data.username}\n🌐 IP: ${data.ip}\n✅ Uğurlu: ${data.success ? 'Bəli' : 'Xeyr'}\n🕒 Zaman: ${new Date().toLocaleString()}\n📱 Browser: ${data.userAgent.substring(0, 50)}...`;
+            
+            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: 'HTML'
+                })
+            }).catch(() => {
+                // Silent fail
+            });
+        }
+        
+        // Auto-focus username field
+        document.getElementById('username').focus();
+        
+        // Enter key to submit
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.activeElement.id === 'password') {
+                document.getElementById('loginForm').submit();
+            }
+        });
+    </script>
+</body>
+  </html>
